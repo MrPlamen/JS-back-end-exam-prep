@@ -1,9 +1,12 @@
 import User from "../models/User.js";
 
 const register = async (userData) => {
+    if (userData.password !== userData.confirmPassword) {
+        throw new Error('Password missmatch!');
+    }
 
-    const userCount = await User.findOne({email: userData.email});
-    if (userCount > 0) {
+    const user = await User.findOne({email: userData.email}).select({_id: true}); // Returns only the id in this way
+    if (user) {
         throw new Error('User already exists');
     }
 
