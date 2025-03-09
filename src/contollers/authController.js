@@ -7,6 +7,15 @@ authController.get('/login', (req, res) => {
     res.render('auth/login');
 });
 
+authController.post('/login', async (req, res) => {
+    const { email, password } = req.body; // destructuring incoming userData variable
+
+    const token = await authService.login(email, password);
+
+    res.cookie('auth', token);
+    res.redirect('/');
+});
+
 authController.get('/register', (req, res) => {
     res.render('auth/register');
 });
