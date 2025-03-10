@@ -1,20 +1,6 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import User from "../models/User.js";
-import { JWT_SECRET } from '../../config.js';
-
-const register = async (userData) => {
-    if (userData.password !== userData.confirmPassword) {
-        throw new Error('Password missmatch!');
-    }
-
-    const user = await User.findOne({ email: userData.email }).select({ _id: true }); // Returns only the id in this way
-    if (user) {
-        throw new Error('User already exists');
-    }
-
-    return User.create(userData);
-};
+import { generateToken } from '../utils/authUtils.js';
 
 const login = async (email, password) => {
     const user = await User.findOne({ email });
@@ -27,15 +13,27 @@ const login = async (email, password) => {
         throw new Error('Invalid user or email!');
     }
 
-    const payload = {
-        id: user.id,
-        email: user.email,
-        username: user.username,
-    }
-    const token = jwt.sign(payload, JWT_SECRET)
+    const token = generateToken(user);
 
     return token;
 }
+
+const register = async (userData) => {
+    if (userData.password !== userData.confirmPassword) {
+        throw new Error('Password missmatch!');
+    }
+
+    const user = await User.findOne({ email: userData.email }).select({ _id: true }); // Returns only the id in this way
+    if (user) {
+        throw new Error('User already exists');
+    }
+
+    const createdUser = await User.create(userData);
+
+    const token = generateToken(createdUser);
+
+    return token;
+};
 
 const authService = {
     register,
