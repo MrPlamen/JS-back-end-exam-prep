@@ -23,6 +23,9 @@ app.engine('hbs', handlebars.engine({
     extname: 'hbs',
     defaultLayout: 'main',
     layoutsDir: 'src/views/layouts',
+    runtimeOptions: {
+        allowProtoMethodsByDefault: true,  // ! Allows to pass MongoDB props to Handlebars
+    }
 }));
 app.set('view engine', 'hbs');
 app.set('views', 'src/views');

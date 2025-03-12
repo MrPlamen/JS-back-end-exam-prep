@@ -12,6 +12,9 @@ export const auth = (req, res, next) => {
     try {
         const decodedToken = jwt.verify(token, JWT_SECRET); // returns decoded token or error
 
+        req.user = decodedToken;
+        req.locals.user = decodedToken;
+
         next();   // valid case - continues
 
     } catch (err) {
