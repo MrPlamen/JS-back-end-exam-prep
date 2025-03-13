@@ -30,7 +30,7 @@ authController.post('/register', async (req, res) => {
     res.redirect('/');
 });
 
-authController.get('/logout', (req, res) => {
+authController.get('/logout', isAuth, (req, res) => {
     res.clearCookie(AUTH_COOKIE_NAME); 
     res.redirect('/');
 });

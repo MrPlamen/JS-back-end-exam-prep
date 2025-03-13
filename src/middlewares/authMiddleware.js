@@ -14,11 +14,18 @@ export const auth = (req, res, next) => {
 
         req.user = decodedToken;
         req.locals.user = decodedToken;
-
-        next();   // valid case - continues
-
     } catch (err) {
         res.clearCookie(AUTH_COOKIE_NAME);
-        res.redirect('/auth/login');
+        return res.redirect('/auth/login');
     }
+
+    next();   // valid case - continues
+};
+
+export const isAuth = (req, res, next) => {
+    if (!req.user) {
+        return res.redirect('/auth/login');
+    }
+
+    next();
 };
